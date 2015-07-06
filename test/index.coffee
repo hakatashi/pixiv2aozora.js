@@ -19,6 +19,5 @@ else
 
 describe 'pixiv2aozora', ->
 	it 'should translate plain texts', ->
-		console.log pixiv2aozora
 		expect(pixiv2aozora('some plain text')).to.equal 'some plain text'
 		expect(pixiv2aozora('日本語プレーンテキスト')).to.equal '日本語プレーンテキスト'

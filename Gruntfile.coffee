@@ -29,6 +29,7 @@ module.exports = (grunt) ->
 		mocha:
 			test:
 				options:
+					reporter: 'Spec'
 					run: true
 				src: ['test/index.html']
 
