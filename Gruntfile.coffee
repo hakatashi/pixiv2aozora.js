@@ -9,7 +9,7 @@ module.exports = (grunt) ->
 			build:
 				expand: true
 				cwd: '.'
-				src: ['**/*.coffee', '!node_modules/**/*', '!Gruntfile.coffee']
+				src: ['{,*/}*.coffee', '!Gruntfile.coffee']
 				dest: '.'
 				ext: '.js'
 
@@ -25,14 +25,14 @@ module.exports = (grunt) ->
 					level: 'ignore'
 				indentation:
 					level: 'ignore'
-			test: ['**/*.coffee', '!node_modules/**/*']
+			test: ['{,*/}*.coffee']
 
 		# Server side mocha test
 		mochaTest:
 			test:
 				options:
 					reporter: 'spec'
-				src: ['test/**/*.js']
+				src: ['test/{,*/}*.js']
 
 		# Client side mocha test
 		mocha:
