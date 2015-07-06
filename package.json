@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/hakatashi/pixiv2aozora.js#readme",
   "devDependencies": {
+    "bower": "^1.4.1",
     "chai": "^3.0.0",
     "grunt": "^0.4.5",
     "grunt-browserify": "^3.8.0",
