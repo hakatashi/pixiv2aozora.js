@@ -76,4 +76,5 @@ $RECYCLE.BIN/
 *.lnk
 
 # Build files
+build
 *.js

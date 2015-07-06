@@ -13,12 +13,25 @@ module.exports = (grunt) ->
 				dest: '.'
 				ext: '.js'
 
+		browserify:
+			build:
+				src: 'global.js'
+				dest: 'build/pixiv2aozora.js'
+
+		# Server side mocha test
 		mochaTest:
 			test:
 				options:
 					reporter: 'spec'
 				src: ['test/**/*.js']
 
-	grunt.registerTask 'build', ['coffee']
-	grunt.registerTask 'test', ['build', 'mochaTest']
+		# Client side mocha test
+		mocha:
+			test:
+				options:
+					run: true
+				src: ['test/index.html']
+
+	grunt.registerTask 'build', ['coffee', 'browserify']
+	grunt.registerTask 'test', ['build', 'mochaTest', 'mocha']
 	grunt.registerTask 'default', ['test']
