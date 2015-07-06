@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/hakatashi/pixiv2aozora.js#readme",
   "devDependencies": {
+    "chai": "^3.0.0",
     "grunt": "^0.4.5",
     "grunt-browserify": "^3.8.0",
     "grunt-cli": "^0.1.13",
@@ -30,8 +31,11 @@
     "grunt-contrib-jshint": "^0.11.2",
     "grunt-contrib-watch": "^0.6.1",
     "grunt-mocha": "^0.4.13",
+    "grunt-mocha-test": "^0.12.7",
     "jshint-stylish": "^2.0.1",
     "load-grunt-tasks": "^3.2.0",
+    "mocha": "^2.2.5",
     "time-grunt": "^1.2.1"
-  }
+  },
+  "dependencies": {}
 }
