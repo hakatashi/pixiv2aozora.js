@@ -18,6 +18,15 @@ module.exports = (grunt) ->
 				src: 'global.js'
 				dest: 'build/pixiv2aozora.js'
 
+		# Lint Cafe
+		coffeelint:
+			options:
+				no_tabs:
+					level: 'ignore'
+				indentation:
+					level: 'ignore'
+			test: ['**/*.coffee', '!node_modules/**/*']
+
 		# Server side mocha test
 		mochaTest:
 			test:
@@ -34,5 +43,5 @@ module.exports = (grunt) ->
 				src: ['test/index.html']
 
 	grunt.registerTask 'build', ['coffee', 'browserify']
-	grunt.registerTask 'test', ['build', 'mochaTest', 'mocha']
-	grunt.registerTask 'default', ['test']
+	grunt.registerTask 'test', ['coffeelint', 'mochaTest', 'mocha']
+	grunt.registerTask 'default', ['build', 'test']
