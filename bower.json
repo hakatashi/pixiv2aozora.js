@@ -1,0 +1,32 @@
+{
+  "name": "pixiv2aozora",
+  "main": "index.js",
+  "version": "0.0.0",
+  "homepage": "https://github.com/hakatashi/pixiv2aozora.js",
+  "authors": [
+    "Koki Takahashi <hakatasiloving@gmail.com>"
+  ],
+  "description": "Convert pixiv-Novel text into Aozora-style text",
+  "moduleType": [
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "pixiv",
+    "aozora",
+    "text",
+    "converter"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "chai": "~3.0.0",
+    "mocha": "~2.2.5"
+  }
+}
