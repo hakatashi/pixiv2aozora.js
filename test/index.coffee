@@ -18,6 +18,35 @@ else
 	pixiv2aozora = window.pixiv2aozora
 
 describe 'pixiv2aozora', ->
-	it 'should translate plain texts', ->
-		expect(pixiv2aozora('some plain text')).to.equal 'some plain text'
-		expect(pixiv2aozora('日本語プレーンテキスト')).to.equal '日本語プレーンテキスト'
+	it 'should translate plain texts as is', ->
+		tests =
+			'some plain text': 'some plain text'
+			'日本語プレーンテキスト': '日本語プレーンテキスト'
+
+		for own from, to of tests
+			expect(pixiv2aozora(from)).to.equal to
+
+	describe '[newpage]', ->
+
+		it 'should convert [newpage] into ［＃改ページ］', ->
+			tests =
+				'[newpage]': '［＃改ページ］'
+
+				"""
+				国境の長いトンネルを抜けると、
+				[newpage]
+				そこは雪国だった。
+				""" : """
+				国境の長いトンネルを抜けると、
+				［＃改ページ］
+				そこは雪国だった。
+				"""
+
+				"""
+				　そんなことを頭の片隅でぼんやり考えながら俺はたいした感慨もなく高校生になり――[newpage]涼宮ハルヒと出会った。
+				""" : """
+				　そんなことを頭の片隅でぼんやり考えながら俺はたいした感慨もなく高校生になり――［＃改ページ］涼宮ハルヒと出会った。
+				"""
+
+			for own from, to of tests
+				expect(pixiv2aozora(from)).to.equal to
