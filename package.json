@@ -36,6 +36,6 @@
     "time-grunt": "^1.2.1"
   },
   "dependencies": {
-    "pixiv-novel-parser": "^0.1.0"
+    "pixiv-novel-parser": "0.1.2"
   }
 }

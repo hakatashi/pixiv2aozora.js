@@ -20,11 +20,11 @@ toAozora = (AST) ->
 	return aozora
 
 tags =
-	newpage: (newpage) -> '［＃改ページ］'
+	newpage: -> '\n［＃改ページ］\n'
 
 pixiv2aozora = (text) ->
 	# Initialize AST
-	parser = new Parser
+	parser = new Parser()
 	parser.parse text
 	AST = parser.tree
 

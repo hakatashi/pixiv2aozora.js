@@ -18,20 +18,21 @@ else
 	pixiv2aozora = window.pixiv2aozora
 
 describe 'pixiv2aozora', ->
+	tests = {}
+
+	afterEach ->
+		for own from, to of tests
+			expect(pixiv2aozora(from)).to.equal to
+
 	it 'should translate plain texts as is', ->
 		tests =
 			'some plain text': 'some plain text'
 			'日本語プレーンテキスト': '日本語プレーンテキスト'
 
-		for own from, to of tests
-			expect(pixiv2aozora(from)).to.equal to
-
 	describe '[newpage]', ->
 
-		it 'should convert [newpage] into ［＃改ページ］', ->
+		it 'should be converted into ［＃改ページ］', ->
 			tests =
-				'[newpage]': '［＃改ページ］'
-
 				"""
 				国境の長いトンネルを抜けると、
 
@@ -47,10 +48,29 @@ describe 'pixiv2aozora', ->
 				"""
 
 				"""
-				　そんなことを頭の片隅でぼんやり考えながら俺はたいした感慨もなく高校生になり――[newpage]涼宮ハルヒと出会った。
+				　そんなことを頭の片隅でぼんやり考えながら俺はたいした感慨もなく高校生になり――
+				[newpage]
+				涼宮ハルヒと出会った。
 				""" : """
-				　そんなことを頭の片隅でぼんやり考えながら俺はたいした感慨もなく高校生になり――［＃改ページ］涼宮ハルヒと出会った。
+				　そんなことを頭の片隅でぼんやり考えながら俺はたいした感慨もなく高校生になり――
+				［＃改ページ］
+				涼宮ハルヒと出会った。
 				"""
 
-			for own from, to of tests
-				expect(pixiv2aozora(from)).to.equal to
+		it 'should insert newlines before and after them', ->
+			tests =
+				"""
+				[newpage]
+				""" : """
+
+				［＃改ページ］
+
+				"""
+
+				"""
+				吾輩は猫である。[newpage]名前はまだない。
+				""" : """
+				吾輩は猫である。
+				［＃改ページ］
+				名前はまだない。
+				"""
