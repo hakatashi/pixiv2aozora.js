@@ -25,6 +25,8 @@ module.exports = (grunt) ->
 					level: 'ignore'
 				indentation:
 					level: 'ignore'
+				max_line_length:
+					value: 120
 			test: ['{,*/}*.coffee']
 
 		# Server side mocha test

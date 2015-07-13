@@ -22,6 +22,8 @@ toAozora = (AST) ->
 tags =
 	newpage: -> '\n［＃改ページ］\n'
 
+	chapter: (AST) -> "\n［＃大見出し］#{toAozora AST.title}［＃大見出し終わり］\n"
+
 pixiv2aozora = (text) ->
 	# Initialize AST
 	parser = new Parser()
