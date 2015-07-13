@@ -93,7 +93,7 @@ describe 'pixiv2aozora', ->
 				見知らぬ、天井
 				"""
 
-		it 'should insert newlines bedore and after them', ->
+		it 'should insert newlines before and after them', ->
 			tests =
 				"""
 				[chapter:おわりのはじまり]
