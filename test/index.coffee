@@ -196,3 +196,18 @@ describe 'pixiv2aozora', ->
 				……｜地球《ちきゅう》か、
 				なにもかも｜懐《なつ》かしい……
 				"""
+
+	describe '[jump]', ->
+		it 'should be transcribed into plain text', ->
+			tests =
+				"""
+				[jump:01]
+				""" : """
+				1ページヘ
+				"""
+
+				"""
+				赤の扉を選んだら[jump:999]、緑の扉を選んだら[jump:801]
+				""" : """
+				赤の扉を選んだら999ページヘ、緑の扉を選んだら801ページヘ
+				"""

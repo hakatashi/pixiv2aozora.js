@@ -30,6 +30,8 @@ tags =
 
 	jumpuri: (AST) -> toAozora AST.title
 
+	jump: (AST) -> "#{AST.pageNumber}ページヘ"
+
 pixiv2aozora = (text) ->
 	# Initialize AST
 	parser = new Parser()
