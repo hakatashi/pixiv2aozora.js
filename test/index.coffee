@@ -165,3 +165,34 @@ describe 'pixiv2aozora', ->
 				挿絵02
 				挿絵03
 				"""
+
+	describe '[[jumpuri]]', ->
+		it 'should be transcribed into plain text', ->
+			tests =
+				"""
+				[[jumpuri: 世界一の小説投稿サイト > http://www.pixiv.net/novel/]]
+				""" : """
+				世界一の小説投稿サイト
+				"""
+
+				"""
+				続きは[[jumpuri:ウェブ>https://travis-ci.org/hakatashi/pixiv2aozora.js]]で！
+				""" : """
+				続きはウェブで！
+				"""
+
+		it 'should be able to contain [[rb]]', ->
+			tests =
+				"""
+				[[jumpuri: アメーバで[[rb:検索>けんさく]][[rb:検索>けんさく]]！ > http://google.com]]
+				""" : """
+				アメーバで｜検索《けんさく》｜検索《けんさく》！
+				"""
+
+				"""
+				……[[jumpuri: [[rb:地球>ちきゅう]] > http://spaceinfo.jaxa.jp/ja/earth.html]]か、
+				なにもかも[[rb:懐>なつ]]かしい……
+				""" : """
+				……｜地球《ちきゅう》か、
+				なにもかも｜懐《なつ》かしい……
+				"""

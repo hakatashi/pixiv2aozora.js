@@ -28,6 +28,8 @@ tags =
 
 	pixivimage: -> ''
 
+	jumpuri: (AST) -> toAozora AST.title
+
 pixiv2aozora = (text) ->
 	# Initialize AST
 	parser = new Parser()
