@@ -13,6 +13,13 @@ module.exports = (grunt) ->
 				dest: '.'
 				ext: '.js'
 
+		concat:
+			shebang:
+				options:
+					banner: '#!/usr/bin/env node\n\n'
+				src: 'cli.js'
+				dest: 'cli.js'
+
 		browserify:
 			build:
 				src: 'global.js'
@@ -44,6 +51,6 @@ module.exports = (grunt) ->
 					run: true
 				src: ['test/index.html']
 
-	grunt.registerTask 'build', ['coffee', 'browserify']
+	grunt.registerTask 'build', ['coffee', 'concat:shebang', 'browserify']
 	grunt.registerTask 'test', ['coffeelint', 'mochaTest', 'mocha']
 	grunt.registerTask 'default', ['build', 'test']
