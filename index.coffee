@@ -1,6 +1,10 @@
 Parser = require('pixiv-novel-parser').Parser
 
+# Meta Characters
 META =
+	# Soft breakline: [newpage] and [chapter] inserts breaklines before and after them,
+	# among they are not prefered to exists on first or last line of the text.
+	# This is praceholder of such breakline that can be removed by postprocessor.
 	SOFTBREAK: 10001
 
 serialize = (AST) ->
