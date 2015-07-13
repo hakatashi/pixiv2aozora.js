@@ -132,3 +132,20 @@ describe 'pixiv2aozora', ->
 				""" : """
 				とある｜科学《かがく》の｜超電磁砲《レールガン》
 				"""
+
+	describe '[pixivimage]', ->
+		it 'should be removed', ->
+			tests =
+				"""
+				[pixivimage:000001]
+				""" : ''
+
+				"""
+				挿絵01[pixivimage:999999]
+				挿絵[pixivimage:683164]02
+				[pixivimage:828828]挿絵03
+				""" : """
+				挿絵01
+				挿絵02
+				挿絵03
+				"""

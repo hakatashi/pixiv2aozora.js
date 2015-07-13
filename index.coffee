@@ -26,6 +26,8 @@ tags =
 
 	rb: (AST) -> "｜#{AST.rubyBase}《#{AST.rubyText}》"
 
+	pixivimage: -> ''
+
 pixiv2aozora = (text) ->
 	# Initialize AST
 	parser = new Parser()
