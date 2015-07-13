@@ -1,13 +1,16 @@
 Parser = require('pixiv-novel-parser').Parser
 
-toAozora = (AST) ->
+META =
+	SOFTBREAK: 10001
+
+serialize = (AST) ->
 	switch AST.type
 
 		# Token array
 		when undefined
-			aozora = ''
+			aozora = []
 			for token in AST
-				aozora += toAozora token
+				aozora = aozora.concat serialize token
 
 		# Tag token
 		when 'tag'
@@ -15,24 +18,46 @@ toAozora = (AST) ->
 
 		# Text token
 		when 'text'
-			aozora = AST.val
+			aozora = [AST.val]
 
 	return aozora
 
 tags =
-	newpage: -> '\n［＃改ページ］\n'
+	newpage: -> [
+		META.SOFTBREAK
+		'［＃改ページ］'
+		META.SOFTBREAK
+	]
 
-	chapter: (AST) -> "\n［＃大見出し］#{toAozora AST.title}［＃大見出し終わり］\n"
+	chapter: (AST) -> [
+		META.SOFTBREAK
+		"［＃大見出し］#{toAozora AST.title}［＃大見出し終わり］"
+		META.SOFTBREAK
+	]
 
-	rb: (AST) -> "｜#{AST.rubyBase}《#{AST.rubyText}》"
+	rb: (AST) -> ["｜#{AST.rubyBase}《#{AST.rubyText}》"]
 
-	pixivimage: -> ''
+	pixivimage: -> []
 
-	jumpuri: (AST) -> toAozora AST.title
+	jumpuri: (AST) -> serialize AST.title
 
-	jump: (AST) -> "#{AST.pageNumber}ページヘ"
+	jump: (AST) -> ["#{AST.pageNumber}ページヘ"]
 
-pixiv2aozora = (text) ->
+toAozora = (AST) ->
+	tokens = serialize AST
+
+	# Remove soft breakline of first line and last line
+	tokens.shift() if tokens[0] is META.SOFTBREAK
+	tokens.pop() if tokens[tokens.length - 1] is META.SOFTBREAK
+
+	# Convert to soft breakline to breakline
+	for token, i in tokens
+		if token is META.SOFTBREAK
+			tokens[i] = '\n'
+
+	return tokens.join ''
+
+pixiv2aozora = (text, options) ->
 	# Initialize AST
 	parser = new Parser()
 	parser.parse text

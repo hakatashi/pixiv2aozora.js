@@ -34,6 +34,12 @@ describe 'pixiv2aozora', ->
 		it 'should be converted into ［＃改ページ］', ->
 			tests =
 				"""
+				[newpage]
+				""" : """
+				［＃改ページ］
+				"""
+
+				"""
 				国境の長いトンネルを抜けると、
 
 				[newpage]
@@ -59,14 +65,6 @@ describe 'pixiv2aozora', ->
 
 		it 'should insert newlines before and after them', ->
 			tests =
-				"""
-				[newpage]
-				""" : """
-
-				［＃改ページ］
-
-				"""
-
 				"""
 				吾輩は猫である。[newpage]名前はまだない。
 				""" : """
@@ -79,13 +77,18 @@ describe 'pixiv2aozora', ->
 		it 'should be converted into ［＃大見出し］', ->
 			tests =
 				"""
+				[chapter:おわりのはじまり]
+				""" : """
+				［＃大見出し］おわりのはじまり［＃大見出し終わり］
+				"""
+
+				"""
 				[chapter:第壱話]
 				使徒、襲来
 
 				[chapter:第弐話]
 				見知らぬ、天井
 				""" : """
-
 				［＃大見出し］第壱話［＃大見出し終わり］
 				使徒、襲来
 
@@ -96,20 +99,11 @@ describe 'pixiv2aozora', ->
 		it 'should insert newlines before and after them', ->
 			tests =
 				"""
-				[chapter:おわりのはじまり]
-				""" : """
-
-				［＃大見出し］おわりのはじまり［＃大見出し終わり］
-
-				"""
-
-				"""
 				[chapter:第拾伍話]嘘と沈黙
 				Those women longed for the touch of others' lips, and thus invited their kisses.
 				[chapter:第拾六話]死に至る病、そして
 				Splitting of the Breast
 				""" : """
-
 				［＃大見出し］第拾伍話［＃大見出し終わり］
 				嘘と沈黙
 				Those women longed for the touch of others' lips, and thus invited their kisses.
@@ -125,13 +119,11 @@ describe 'pixiv2aozora', ->
 				[chapter:それはとっても[[rb:嬉>うれ]]しいなって]
 				[chapter:もう[[rb:何>なに]]も[[rb:怖>こわ]]くない]
 				""" : """
-
 				［＃大見出し］｜夢《ゆめ》の｜中《なか》で｜逢《あ》った、ような……［＃大見出し終わり］
 
 				［＃大見出し］それはとっても｜嬉《うれ》しいなって［＃大見出し終わり］
 
 				［＃大見出し］もう｜何《なに》も｜怖《こわ》くない［＃大見出し終わり］
-
 				"""
 
 	describe '[[rb]]', ->
