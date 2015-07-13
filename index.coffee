@@ -24,6 +24,8 @@ tags =
 
 	chapter: (AST) -> "\n［＃大見出し］#{toAozora AST.title}［＃大見出し終わり］\n"
 
+	rb: (AST) -> "｜#{AST.rubyBase}《#{AST.rubyText}》"
+
 pixiv2aozora = (text) ->
 	# Initialize AST
 	parser = new Parser()
