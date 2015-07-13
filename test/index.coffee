@@ -117,3 +117,18 @@ describe 'pixiv2aozora', ->
 				死に至る病、そして
 				Splitting of the Breast
 				"""
+
+	describe '[[rb]]', ->
+		it 'should be converted into ｜□□《○○》', ->
+			tests =
+				"""
+				[[rb: pixiv > ピクシブ]]
+				""" : """
+				｜pixiv《ピクシブ》
+				"""
+
+				"""
+				とある[[rb:科学>かがく]]の[[rb:超電磁砲>レールガン]]
+				""" : """
+				とある｜科学《かがく》の｜超電磁砲《レールガン》
+				"""
