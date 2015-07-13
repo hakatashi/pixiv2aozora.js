@@ -51,6 +51,23 @@ module.exports = (grunt) ->
 					run: true
 				src: ['test/index.html']
 
+		copy:
+			dist:
+				expand: true
+				cwd: 'build/'
+				src: '*'
+				dest: 'dist/'
+				filter: 'isFile'
+
+		uglify:
+			dist:
+				options:
+					sourceMap: true
+				src: 'dist/pixiv2aozora.js'
+				dest: 'dist/pixiv2aozora.min.js'
+
 	grunt.registerTask 'build', ['coffee', 'concat:shebang', 'browserify']
 	grunt.registerTask 'test', ['coffeelint', 'mochaTest', 'mocha']
+	grunt.registerTask 'dist', ['build', 'test', 'copy', 'uglify']
+
 	grunt.registerTask 'default', ['build', 'test']

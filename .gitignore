@@ -78,3 +78,4 @@ $RECYCLE.BIN/
 # Build files
 build
 *.js
+!dist/*
