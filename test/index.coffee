@@ -118,6 +118,22 @@ describe 'pixiv2aozora', ->
 				Splitting of the Breast
 				"""
 
+		it 'should be able to contain [[rb]]', ->
+			tests =
+				"""
+				[chapter:[[rb:夢>ゆめ]]の[[rb:中>なか]]で[[rb:逢>あ]]った、ような……]
+				[chapter:それはとっても[[rb:嬉>うれ]]しいなって]
+				[chapter:もう[[rb:何>なに]]も[[rb:怖>こわ]]くない]
+				""" : """
+
+				［＃大見出し］｜夢《ゆめ》の｜中《なか》で｜逢《あ》った、ような……［＃大見出し終わり］
+
+				［＃大見出し］それはとっても｜嬉《うれ》しいなって［＃大見出し終わり］
+
+				［＃大見出し］もう｜何《なに》も｜怖《こわ》くない［＃大見出し終わり］
+
+				"""
+
 	describe '[[rb]]', ->
 		it 'should be converted into ｜□□《○○》', ->
 			tests =
