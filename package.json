@@ -36,6 +36,8 @@
     "time-grunt": "^1.2.1"
   },
   "dependencies": {
+    "commander": "^2.8.1",
     "pixiv-novel-parser": "0.2.x"
-  }
+  },
+  "bin": "./cli.js"
 }
