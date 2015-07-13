@@ -74,3 +74,46 @@ describe 'pixiv2aozora', ->
 				［＃改ページ］
 				名前はまだない。
 				"""
+
+	describe '[chapter]', ->
+		it 'should be converted into ［＃大見出し］', ->
+			tests =
+				"""
+				[chapter:第壱話]
+				使徒、襲来
+
+				[chapter:第弐話]
+				見知らぬ、天井
+				""" : """
+
+				［＃大見出し］第壱話［＃大見出し終わり］
+				使徒、襲来
+
+				［＃大見出し］第弐話［＃大見出し終わり］
+				見知らぬ、天井
+				"""
+
+		it 'should insert newlines bedore and after them', ->
+			tests =
+				"""
+				[chapter:おわりのはじまり]
+				""" : """
+
+				［＃大見出し］おわりのはじまり［＃大見出し終わり］
+
+				"""
+
+				"""
+				[chapter:第拾伍話]嘘と沈黙
+				Those women longed for the touch of others' lips, and thus invited their kisses.
+				[chapter:第拾六話]死に至る病、そして
+				Splitting of the Breast
+				""" : """
+
+				［＃大見出し］第拾伍話［＃大見出し終わり］
+				嘘と沈黙
+				Those women longed for the touch of others' lips, and thus invited their kisses.
+				［＃大見出し］第拾六話［＃大見出し終わり］
+				死に至る病、そして
+				Splitting of the Breast
+				"""
