@@ -16,7 +16,7 @@ program
 .parse process.argv
 
 # Process input
-if program.args[0] is undefined
+if program.args?[0] is undefined
 	input = process.stdin
 else
 	input = fs.createReadStream program.args[0]
