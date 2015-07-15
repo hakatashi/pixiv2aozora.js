@@ -7,7 +7,7 @@ iconv = require 'iconv-lite'
 pixiv2aozora = require './'
 
 program
-.version '0.2.0'
+.version '0.2.1'
 .description 'Convert pixiv-Novel text into Aozora-style text'
 .usage '[options] <file>'
 .option '-o, --output <file>', 'Write output to <file> instead of stdout', String
