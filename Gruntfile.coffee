@@ -66,6 +66,10 @@ module.exports = (grunt) ->
 				src: 'dist/pixiv2aozora.js'
 				dest: 'dist/pixiv2aozora.min.js'
 
+	# hack to make grunt-contrib-concat NOT insert CRLF on Windows:
+	# https://github.com/gruntjs/grunt-contrib-concat/issues/105
+	grunt.util.linefeed = '\n'
+
 	grunt.registerTask 'build', ['coffee', 'concat:shebang', 'browserify']
 	grunt.registerTask 'test', ['coffeelint', 'mochaTest', 'mocha']
 	grunt.registerTask 'dist', ['build', 'test', 'copy', 'uglify']
