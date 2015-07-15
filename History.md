@@ -1,3 +1,8 @@
+0.2.1
+-----
+
+* :bug: Fix the problem cli options not works
+
 0.2.0
 -----
 
