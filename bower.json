@@ -1,7 +1,7 @@
 {
   "name": "pixiv2aozora",
   "main": "index.js",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "homepage": "https://github.com/hakatashi/pixiv2aozora.js",
   "authors": [
     "Koki Takahashi <hakatasiloving@gmail.com>"

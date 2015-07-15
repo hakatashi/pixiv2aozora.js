@@ -12,51 +12,73 @@
 
 },{"./":2}],2:[function(require,module,exports){
 (function() {
-  var Parser, pixiv2aozora, tags, toAozora;
+  var META, Parser, pixiv2aozora, serialize, tags, toAozora;
 
   Parser = require('pixiv-novel-parser').Parser;
 
-  toAozora = function(AST) {
-    var aozora, i, len, token;
+  META = {
+    SOFTBREAK: 10001
+  };
+
+  serialize = function(AST) {
+    var aozora, j, len, token;
     switch (AST.type) {
       case void 0:
-        aozora = '';
-        for (i = 0, len = AST.length; i < len; i++) {
-          token = AST[i];
-          aozora += toAozora(token);
+        aozora = [];
+        for (j = 0, len = AST.length; j < len; j++) {
+          token = AST[j];
+          aozora = aozora.concat(serialize(token));
         }
         break;
       case 'tag':
         aozora = tags[AST.name](AST);
         break;
       case 'text':
-        aozora = AST.val;
+        aozora = [AST.val];
     }
     return aozora;
   };
 
   tags = {
     newpage: function() {
-      return '\n［＃改ページ］\n';
+      return [META.SOFTBREAK, '［＃改ページ］', META.SOFTBREAK];
     },
     chapter: function(AST) {
-      return "\n［＃大見出し］" + (toAozora(AST.title)) + "［＃大見出し終わり］\n";
+      return [META.SOFTBREAK, "［＃大見出し］" + (toAozora(AST.title)) + "［＃大見出し終わり］", META.SOFTBREAK];
     },
     rb: function(AST) {
-      return "｜" + AST.rubyBase + "《" + AST.rubyText + "》";
+      return ["｜" + AST.rubyBase + "《" + AST.rubyText + "》"];
     },
     pixivimage: function() {
-      return '';
+      return [];
     },
     jumpuri: function(AST) {
-      return toAozora(AST.title);
+      return serialize(AST.title);
     },
     jump: function(AST) {
-      return AST.pageNumber + "ページヘ";
+      return [AST.pageNumber + "ページヘ"];
     }
   };
 
-  pixiv2aozora = function(text) {
+  toAozora = function(AST) {
+    var i, j, len, token, tokens;
+    tokens = serialize(AST);
+    if (tokens[0] === META.SOFTBREAK) {
+      tokens.shift();
+    }
+    if (tokens[tokens.length - 1] === META.SOFTBREAK) {
+      tokens.pop();
+    }
+    for (i = j = 0, len = tokens.length; j < len; i = ++j) {
+      token = tokens[i];
+      if (token === META.SOFTBREAK) {
+        tokens[i] = '\n';
+      }
+    }
+    return tokens.join('');
+  };
+
+  pixiv2aozora = function(text, options) {
     var AST, parser;
     parser = new Parser();
     parser.parse(text);

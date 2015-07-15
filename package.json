@@ -1,6 +1,6 @@
 {
   "name": "pixiv2aozora",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Convert pixiv-Novel text into Aozora-style text",
   "main": "index.js",
   "scripts": {

@@ -8,7 +8,7 @@ pixiv2aozora = require './'
 
 program
 .command 'pixiv2aozora <file>'
-.version '0.0.0'
+.version '0.2.0'
 .description 'Convert pixiv-Novel text into Aozora-style text'
 .option '-o, --output <file>', 'Write output to <file> instead of stdout', String
 .option '--input-encoding <encoding>', 'Specify encoding to read from input. Defaults to utf8', String
