@@ -10,6 +10,9 @@ expect = chai.expect
 should = chai.should()
 pixiv2aozora = require '../'
 
+TEST_IN = '[[rb:小説>しょうせつ]]'
+TEST_OUT = '｜小説《しょうせつ》'
+
 describe 'pixiv2aozora command', ->
 	execute = (options = {}) ->
 		options.args ?= []
@@ -58,3 +61,34 @@ describe 'pixiv2aozora command', ->
 					stdout.should.equals to
 					done()
 		, done
+
+	describe 'file I/O', ->
+		afterEach (done) -> fs.unlink 'asset.txt', done
+
+		it 'should accept text file as input', (done) ->
+			async.series [
+				(done) -> fs.writeFile 'asset.txt', TEST_IN, done
+				(done) ->
+					execute
+						args: ['asset.txt']
+						onClose: (code, stdout) ->
+							code.should.equals 0
+							stdout.should.equals TEST_OUT
+							done()
+			], done
+
+		it 'should accept text file as output', (done) ->
+			async.waterfall [
+				(done) ->
+					execute
+						args: ['-o asset.txt']
+						stdin: TEST_IN
+						onClose: (code, stdout) ->
+							code.should.equals 0
+							stdout.should.equals ''
+							done()
+				(done) -> fs.readFile 'asset.txt', done
+				(text, done) ->
+					text.toString().should.equals TEST_OUT
+					done()
+			], done
