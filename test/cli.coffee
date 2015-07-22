@@ -9,16 +9,16 @@ should = chai.should()
 pixiv2aozora = require '../'
 
 describe 'pixiv2aozora command', ->
-	it 'should basically translate some texts', (done) ->
-		if process.platform is 'win32'
-			command = '.\\node_modules\\.bin\\coffee cli.coffee'
-		else
-			command = './node_modules/.bin/coffee cli.coffee'
+	execute = (options = {}) ->
+		options.args ?= []
+		options.stdin ?= ''
+		options.onClose ?= null
 
-		cli = exec command, cwd: path.join __dirname, '..'
+		# Execute node
+		cli = exec ['node cli.js'].concat(options.args).join ' ', cwd: path.join __dirname, '..'
 
 		# stdin
-		cli.stdin.end 'もじれつー'
+		cli.stdin.end options.stdin
 
 		# stdout
 		stdout = ''
@@ -27,7 +27,12 @@ describe 'pixiv2aozora command', ->
 		# stderr
 		cli.stderr.pipe process.stderr
 
-		cli.on 'close', (code) ->
-			code.should.equals 0
-			stdout.should.equals 'もじれつー'
-			done()
+		cli.on 'close', (code) -> options.onClose?(code, stdout)
+
+	it 'should basically translate some texts', (done) ->
+		execute
+			stdin: 'もじれつー'
+			onClose: (code, stdout) ->
+				code.should.equals 0
+				stdout.should.equals 'もじれつー'
+				done()
