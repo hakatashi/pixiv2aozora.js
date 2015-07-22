@@ -105,7 +105,7 @@ describe 'pixiv2aozora command', ->
 					done()
 			], done
 
-		it 'should be safe to write back input to the same file', (done) ->
+		it 'should be safe to write input back to the same file', (done) ->
 			async.waterfall [
 				(done) -> fs.writeFile 'asset.txt', TEST_IN, done
 				(done) -> execute
@@ -117,6 +117,33 @@ describe 'pixiv2aozora command', ->
 					fs.readFile 'asset.txt', done
 				(text, done) ->
 					text.toString().should.equals TEST_OUT
+					done()
+			], done
+
+		it 'should be safe when huge file has been input', (done) ->
+			@timeout 5000
+
+			data = ''
+			for i in [0...10000]
+				data += '無駄'
+
+			async.waterfall [
+				(done) ->
+					# Append 6B * 10000 * 100 = 6MB
+					async.timesSeries 100, (n, done) ->
+						fs.appendFile 'asset.txt', data, done
+					, done
+				(results, done) -> execute
+					args: ['asset.txt', '-o asset.txt']
+					callback: done
+				(stdout, stderr, done) ->
+					stdout.toString().should.equals ''
+					stderr.toString().should.equals ''
+					fs.readFile 'asset.txt', done
+				(text, done) ->
+					text.length.should.equals 6 * 10000 * 100
+					for i in [0...100]
+						text.slice(i * 60000, (i + 1) * 60000).toString().should.equals data
 					done()
 			], done
 
