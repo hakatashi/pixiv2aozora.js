@@ -2,6 +2,8 @@ fs = require 'fs'
 path = require 'path'
 exec = require('child_process').exec
 
+async = require 'async'
+
 chai = require 'chai'
 assert = chai.assert
 expect = chai.expect
@@ -29,10 +31,30 @@ describe 'pixiv2aozora command', ->
 
 		cli.on 'close', (code) -> options.onClose?(code, stdout)
 
-	it 'should basically translate some texts', (done) ->
-		execute
-			stdin: 'もじれつー'
-			onClose: (code, stdout) ->
-				code.should.equals 0
-				stdout.should.equals 'もじれつー'
-				done()
+	it 'should basically translate some texts by stdin and stdout', (done) ->
+		tests =
+			'もじれつー': 'もじれつー'
+			'ながいもじれつー': 'ながいもじれつー'
+
+			"""
+			[chapter:[[rb:和歌>ワカ]]]
+
+			「さばかりの事に死ぬるや」
+			「さばかりの事に生くるや」
+			止せ止せ問答
+			""" : """
+			［＃大見出し］｜和歌《ワカ》［＃大見出し終わり］
+
+			「さばかりの事に死ぬるや」
+			「さばかりの事に生くるや」
+			止せ止せ問答
+			"""
+
+		async.forEachOfSeries tests, (from, to, done) ->
+			execute
+				stdin: from
+				onClose: (code, stdout) ->
+					code.should.equals 0
+					stdout.should.equals to
+					done()
+		, done
