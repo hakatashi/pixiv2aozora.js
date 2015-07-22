@@ -50,7 +50,7 @@ describe 'pixiv2aozora command', ->
 			止せ止せ問答
 			"""
 
-		async.forEachOfSeries tests, (from, to, done) ->
+		async.forEachOfSeries tests, (to, from, done) ->
 			execute
 				stdin: from
 				onClose: (code, stdout) ->
