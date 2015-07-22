@@ -21,7 +21,10 @@ describe 'pixiv2aozora command', ->
 		options.callback ?= undefined
 
 		# Execute node
-		cli = exec ['node cli.js'].concat(options.args).join(' '), cwd: path.join(__dirname, '..'), options.callback
+		cli = exec ['node cli.js'].concat(options.args).join(' '),
+			cwd: path.join(__dirname, '..')
+			encoding: null
+		, options.callback
 
 		# stdin
 		cli.stdin.end options.stdin
@@ -57,8 +60,8 @@ describe 'pixiv2aozora command', ->
 				stdin: from
 				callback: (error, stdout, stderr) ->
 					if error then throw error
-					stdout.should.equals to
-					stderr.should.equals ''
+					stdout.toString().should.equals to
+					stderr.toString().should.equals ''
 					done()
 		, done
 
@@ -73,8 +76,8 @@ describe 'pixiv2aozora command', ->
 						args: ['asset.txt']
 						callback: done
 				(stdout, stderr, done) ->
-					stdout.should.equals TEST_OUT
-					stderr.should.equals ''
+					stdout.toString().should.equals TEST_OUT
+					stderr.toString().should.equals ''
 					done()
 			], done
 
@@ -86,8 +89,8 @@ describe 'pixiv2aozora command', ->
 						stdin: TEST_IN
 						callback: done
 				(stdout, stderr, done) ->
-					stdout.should.equals ''
-					stderr.should.equals ''
+					stdout.toString().should.equals ''
+					stderr.toString().should.equals ''
 					fs.readFile 'asset.txt', done
 				(text, done) ->
 					text.toString().should.equals TEST_OUT
@@ -101,8 +104,8 @@ describe 'pixiv2aozora command', ->
 				stdin: iconv.encode TEST_IN, 'utf16'
 				callback: (error, stdout, stderr) ->
 					if error then throw error
-					stdout.should.equals TEST_OUT
-					stderr.should.equals ''
+					stdout.toString().should.equals TEST_OUT
+					stderr.toString().should.equals ''
 					done()
 
 		it 'should accept Shift_JIS as encoding', (done) ->
@@ -111,6 +114,27 @@ describe 'pixiv2aozora command', ->
 				stdin: iconv.encode TEST_IN, 'shift_jis'
 				callback: (error, stdout, stderr) ->
 					if error then throw error
-					stdout.should.equals TEST_OUT
-					stderr.should.equals ''
+					stdout.toString().should.equals TEST_OUT
+					stderr.toString().should.equals ''
+					done()
+
+	describe '--output-encoding option', ->
+		it 'should accept UTF-16 as encoding', (done) ->
+			execute
+				args: ['--output-encoding utf16']
+				stdin: TEST_IN
+				callback: (error, stdout, stderr) ->
+					if error then throw error
+					iconv.decode(stdout, 'utf16').should.equals TEST_OUT
+					stderr.toString().should.equals ''
+					done()
+
+		it 'should accept Shift_JIS as encoding', (done) ->
+			execute
+				args: ['--output-encoding shift_jis']
+				stdin: TEST_IN
+				callback: (error, stdout, stderr) ->
+					if error then throw error
+					iconv.decode(stdout, 'shift_jis').should.equals TEST_OUT
+					stderr.toString().should.equals ''
 					done()
