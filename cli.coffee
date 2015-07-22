@@ -21,12 +21,6 @@ if program.args?[0] is undefined
 else
 	input = fs.createReadStream program.args[0]
 
-# Process output
-if program.output is undefined
-	output = process.stdout
-else
-	output = fs.createWriteStream program.output
-
 # Encoding defaults to UTF-8
 program.inputEncoding ?= 'utf8'
 program.outputEncoding ?= 'utf8'
@@ -41,8 +35,14 @@ input.on 'end', ->
 	aozora = pixiv2aozora pixiv
 	bufferOut = iconv.encode aozora, program.outputEncoding
 
-	# Write out
-	if output is process.stdout
-		output.write bufferOut
+	# Process output
+	if program.output is undefined
+		output = process.stdout
 	else
-		output.end bufferOut
+		output = fs.createWriteStream program.output
+
+	output.write bufferOut
+
+	# Write out
+	if output isnt process.stdout
+		output.end()
