@@ -11,8 +11,29 @@ expect = chai.expect
 should = chai.should()
 pixiv2aozora = require '../'
 
-TEST_IN = '[[rb:小説>しょうせつ]]'
-TEST_OUT = '｜小説《しょうせつ》'
+TEST_IN = """
+	[chapter: テスト[[rb: 用 > よう]][[rb:小説>しょうせつ]]]
+
+	「これは非道く情緒的な兵器だ。」
+	それは同時に悲しみを破砕する。[newpage]
+
+	[[rb: 檣頭電光 > セントエルモ]]がギイ、と弾けた。
+	それが斯かる[[jumpuri: 人生 > http://www.vap.co.jp/jinsei/]]の全ての証左だった。
+
+	[jump:1]
+"""
+TEST_OUT = """
+	［＃大見出し］テスト｜用《よう》｜小説《しょうせつ》［＃大見出し終わり］
+
+	「これは非道く情緒的な兵器だ。」
+	それは同時に悲しみを破砕する。
+	［＃改ページ］
+
+	｜檣頭電光《セントエルモ》がギイ、と弾けた。
+	それが斯かる人生の全ての証左だった。
+
+	1ページヘ
+"""
 
 describe 'pixiv2aozora command', ->
 	execute = (options = {}) ->
