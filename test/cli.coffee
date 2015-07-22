@@ -120,7 +120,7 @@ describe 'pixiv2aozora command', ->
 					done()
 			], done
 
-		it 'should be safe when huge file has been input', (done) ->
+		it 'should be safe of huge file I/O', (done) ->
 			@timeout 5000
 
 			data = ''
