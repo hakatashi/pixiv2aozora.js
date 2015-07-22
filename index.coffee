@@ -14,7 +14,7 @@ serialize = (AST) ->
 		when undefined
 			aozora = []
 			for token in AST
-				aozora = aozora.concat serialize token
+				aozora.push serialize(token)...
 
 		# Tag token
 		when 'tag'
@@ -35,7 +35,9 @@ tags =
 
 	chapter: (AST) -> [
 		META.SOFTBREAK
-		"［＃大見出し］#{toAozora AST.title}［＃大見出し終わり］"
+		'［＃大見出し］'
+		serialize(AST.title)...
+		'［＃大見出し終わり］'
 		META.SOFTBREAK
 	]
 
