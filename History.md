@@ -1,3 +1,11 @@
+0.2.2
+-----
+
+* Improve pixiv2aozora command
+  - :white_check_mark: They now have their own test, sincerely
+  - :art: Writing input back to the same file is now supported
+  - :bug: Issues on treating huge files are fixed
+
 0.2.1
 -----
 
