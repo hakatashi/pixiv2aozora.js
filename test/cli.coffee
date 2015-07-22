@@ -105,6 +105,21 @@ describe 'pixiv2aozora command', ->
 					done()
 			], done
 
+		it 'should be safe to write back input to the same file', (done) ->
+			async.waterfall [
+				(done) -> fs.writeFile 'asset.txt', TEST_IN, done
+				(done) -> execute
+					args: ['asset.txt', '-o asset.txt']
+					callback: done
+				(stdout, stderr, done) ->
+					stdout.toString().should.equals ''
+					stderr.toString().should.equals ''
+					fs.readFile 'asset.txt', done
+				(text, done) ->
+					text.toString().should.equals TEST_OUT
+					done()
+			], done
+
 	describe '--input-encoding option', ->
 		it 'should accept UTF-16 as encoding', (done) ->
 			execute
