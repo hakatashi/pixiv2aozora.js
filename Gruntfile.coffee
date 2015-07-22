@@ -41,7 +41,11 @@ module.exports = (grunt) ->
 			test:
 				options:
 					reporter: 'spec'
-				src: ['test/{,*/}*.js']
+				src: ['test/index.js']
+			cli:
+				options:
+					reporter: 'spec'
+				src: ['test/cli.js']
 
 		# Client side mocha test
 		mocha:

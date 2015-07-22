@@ -42,4 +42,7 @@ input.on 'end', ->
 	bufferOut = iconv.encode aozora, program.outputEncoding
 
 	# Write out
-	output.end bufferOut
+	if output is process.stdout
+		output.write bufferOut
+	else
+		output.end bufferOut
