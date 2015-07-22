@@ -21,10 +21,18 @@ describe 'pixiv2aozora command', ->
 		options.callback ?= undefined
 
 		# Execute node
+		# Important: Node 0.10 does not accept {encoding: null} to return raw buffer, so
+		# we get buffer as hex and re-encode it to get raw buffer.
 		cli = exec ['node cli.js'].concat(options.args).join(' '),
 			cwd: path.join(__dirname, '..')
-			encoding: null
-		, options.callback
+			encoding: 'hex'
+		, (error, stdout, stderr) ->
+			if error
+				options.callback.apply this, arguments
+			else
+				stdout = new Buffer stdout, 'hex'
+				stderr = new Buffer stderr, 'hex'
+				options.callback error, stdout, stderr
 
 		# stdin
 		cli.stdin.end options.stdin
