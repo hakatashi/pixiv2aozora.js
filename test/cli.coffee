@@ -3,6 +3,7 @@ path = require 'path'
 exec = require('child_process').exec
 
 async = require 'async'
+iconv = require 'iconv-lite'
 
 chai = require 'chai'
 assert = chai.assert
@@ -17,10 +18,10 @@ describe 'pixiv2aozora command', ->
 	execute = (options = {}) ->
 		options.args ?= []
 		options.stdin ?= ''
-		options.onClose ?= null
+		options.callback ?= undefined
 
 		# Execute node
-		cli = exec ['node cli.js'].concat(options.args).join ' ', cwd: path.join __dirname, '..'
+		cli = exec ['node cli.js'].concat(options.args).join(' '), cwd: path.join(__dirname, '..'), options.callback
 
 		# stdin
 		cli.stdin.end options.stdin
@@ -31,8 +32,6 @@ describe 'pixiv2aozora command', ->
 
 		# stderr
 		cli.stderr.pipe process.stderr
-
-		cli.on 'close', (code) -> options.onClose?(code, stdout)
 
 	it 'should basically translate some texts by stdin and stdout', (done) ->
 		tests =
@@ -56,9 +55,10 @@ describe 'pixiv2aozora command', ->
 		async.forEachOfSeries tests, (to, from, done) ->
 			execute
 				stdin: from
-				onClose: (code, stdout) ->
-					code.should.equals 0
+				callback: (error, stdout, stderr) ->
+					if error then throw error
 					stdout.should.equals to
+					stderr.should.equals ''
 					done()
 		, done
 
@@ -66,15 +66,16 @@ describe 'pixiv2aozora command', ->
 		afterEach (done) -> fs.unlink 'asset.txt', done
 
 		it 'should accept text file as input', (done) ->
-			async.series [
+			async.waterfall [
 				(done) -> fs.writeFile 'asset.txt', TEST_IN, done
 				(done) ->
 					execute
 						args: ['asset.txt']
-						onClose: (code, stdout) ->
-							code.should.equals 0
-							stdout.should.equals TEST_OUT
-							done()
+						callback: done
+				(stdout, stderr, done) ->
+					stdout.should.equals TEST_OUT
+					stderr.should.equals ''
+					done()
 			], done
 
 		it 'should accept text file as output', (done) ->
@@ -83,12 +84,33 @@ describe 'pixiv2aozora command', ->
 					execute
 						args: ['-o asset.txt']
 						stdin: TEST_IN
-						onClose: (code, stdout) ->
-							code.should.equals 0
-							stdout.should.equals ''
-							done()
-				(done) -> fs.readFile 'asset.txt', done
+						callback: done
+				(stdout, stderr, done) ->
+					stdout.should.equals ''
+					stderr.should.equals ''
+					fs.readFile 'asset.txt', done
 				(text, done) ->
 					text.toString().should.equals TEST_OUT
 					done()
 			], done
+
+	describe '--input-encoding option', ->
+		it 'should accept UTF-16 as encoding', (done) ->
+			execute
+				args: ['--input-encoding utf16']
+				stdin: iconv.encode TEST_IN, 'utf16'
+				callback: (error, stdout, stderr) ->
+					if error then throw error
+					stdout.should.equals TEST_OUT
+					stderr.should.equals ''
+					done()
+
+		it 'should accept Shift_JIS as encoding', (done) ->
+			execute
+				args: ['--input-encoding shift_jis']
+				stdin: iconv.encode TEST_IN, 'shift_jis'
+				callback: (error, stdout, stderr) ->
+					if error then throw error
+					stdout.should.equals TEST_OUT
+					stderr.should.equals ''
+					done()
