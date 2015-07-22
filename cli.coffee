@@ -31,16 +31,15 @@ else
 program.inputEncoding ?= 'utf8'
 program.outputEncoding ?= 'utf8'
 
-# Setup pixiv2aozora stream
-class P2AStream extends stream.Transform
-	_transform: (chunk, encoding, callback) ->
-		string = iconv.decode chunk, program.inputEncoding
-		aozora = pixiv2aozora string
-		@push iconv.encode aozora, program.outputEncoding
-		callback()
+# Store data to buffer
+bufferIn = new Buffer(0)
 
-# Instance P2AStream
-p2aStream = new P2AStream()
+input.on 'data', (chunk) ->
+	bufferIn = Buffer.concat [bufferIn, chunk]
+input.on 'end', ->
+	pixiv = iconv.decode bufferIn, program.inputEncoding
+	aozora = pixiv2aozora pixiv
+	bufferOut = iconv.encode aozora, program.outputEncoding
 
-# Be a plumber!
-input.pipe(p2aStream).pipe(output)
+	# Write out
+	output.end bufferOut
