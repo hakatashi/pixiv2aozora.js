@@ -22,7 +22,11 @@
     "novel",
     "converter"
   ],
-  "author": "hakatashi",
+  "author": {
+    "name": "Koki Takahashi",
+    "email": "hakatasiloving@gmail.com",
+    "url": "http://hakatashi.com/"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/hakatashi/pixiv2aozora.js/issues"
