@@ -7,6 +7,20 @@ META =
 	# This is praceholder of such breakline that can be removed by postprocessor.
 	SOFTBREAK: 10001
 
+entities =
+	'《': '※［＃始め二重山括弧、1-1-52］'
+	'》': '※［＃終わり二重山括弧、1-1-53］'
+	'［': '※［＃始め角括弧、1-1-46］'
+	'］': '※［＃終わり角括弧、1-1-47］'
+	'〔': '※［＃始めきっこう（亀甲）括弧、1-1-44］'
+	'〕': '※［＃終わりきっこう（亀甲）括弧、1-1-45］'
+	'｜': '※［＃縦線、1-1-35］'
+	'＃': '※［＃井げた、1-1-84］'
+	'※': '※［＃米印、1-2-8］'
+
+specialChars = (char for own char, entity of entities).join ''
+specialCharsRegEx = new RegExp "[#{specialChars}]", 'g'
+
 serialize = (AST) ->
 	switch AST.type
 
@@ -22,9 +36,12 @@ serialize = (AST) ->
 
 		# Text token
 		when 'text'
-			aozora = [AST.val]
+			aozora = [escapeText AST.val]
 
 	return aozora
+
+# Escape special chars in text into their entities
+escapeText = (text) -> text.replace specialCharsRegEx, (char) -> entities[char]
 
 tags =
 	newpage: -> [
@@ -41,7 +58,13 @@ tags =
 		META.SOFTBREAK
 	]
 
-	rb: (AST) -> ["｜#{AST.rubyBase}《#{AST.rubyText}》"]
+	rb: (AST) -> [
+		'｜'
+		escapeText AST.rubyBase
+		'《'
+		escapeText AST.rubyText
+		'》'
+	]
 
 	pixivimage: -> []
 
