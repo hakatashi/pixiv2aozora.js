@@ -11,6 +11,8 @@ expect = chai.expect
 should = chai.should()
 pixiv2aozora = require '../'
 
+pkg = require '../package.json'
+
 TEST_IN = """
 	[chapter: テスト[[rb: 用 > よう]][[rb:小説>しょうせつ]]]
 
@@ -64,6 +66,17 @@ describe 'pixiv2aozora command', ->
 
 		# stderr
 		cli.stderr.pipe process.stderr
+
+	it 'should display correct version number by -V', (done) ->
+		async.waterfall [
+			(done) -> execute
+				args: ['-V']
+				callback: done
+			(stdout, stderr, done) ->
+				stdout.toString().trim().should.equals pkg.version
+				stderr.toString().should.equals ''
+				done()
+		], done
 
 	it 'should basically translate some texts by stdin and stdout', (done) ->
 		execute
