@@ -5,6 +5,15 @@ module.exports = (grunt) ->
 	grunt.initConfig
 		pkg: grunt.file.readJSON 'package.json'
 
+		banner: """
+			/*!
+			 * <%= pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>
+			 * <%= pkg.homepage %>
+			 * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>
+			 * Licensed under MIT License
+			 */
+		"""
+
 		coffee:
 			build:
 				expand: true
@@ -22,6 +31,8 @@ module.exports = (grunt) ->
 
 		browserify:
 			build:
+				options:
+					banner: '<%= banner %>'
 				src: 'global.js'
 				dest: 'build/pixiv2aozora.js'
 
@@ -67,6 +78,7 @@ module.exports = (grunt) ->
 		uglify:
 			dist:
 				options:
+					banner: '<%= banner %>'
 					sourceMap: true
 				src: 'dist/pixiv2aozora.js'
 				dest: 'dist/pixiv2aozora.min.js'
