@@ -34,11 +34,12 @@ module.exports = (grunt) ->
 					level: 'ignore'
 				max_line_length:
 					value: 120
-			test: ['{,*/}*.coffee']
+			module: ['{,*/}*.coffee', '!cli.coffee']
+			cli: ['cli.coffee']
 
 		# Server side mocha test
 		mochaTest:
-			test:
+			module:
 				options:
 					reporter: 'spec'
 				src: ['test/index.js']
@@ -75,7 +76,9 @@ module.exports = (grunt) ->
 	grunt.util.linefeed = '\n'
 
 	grunt.registerTask 'build', ['coffee', 'concat:shebang', 'browserify']
-	grunt.registerTask 'test', ['coffeelint', 'mochaTest', 'mocha']
+	grunt.registerTask 'test:module', ['coffeelint:module', 'mochaTest:module', 'mocha']
+	grunt.registerTask 'test:cli', ['coffeelint:cli', 'mochaTest:cli']
+	grunt.registerTask 'test', ['test:module', 'test:cli']
 	grunt.registerTask 'dist', ['build', 'test', 'copy', 'uglify']
 
 	grunt.registerTask 'default', ['build', 'test']
