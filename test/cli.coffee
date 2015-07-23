@@ -106,7 +106,7 @@ describe 'pixiv2aozora command', ->
 					done()
 			], done
 
-		it 'should be safe to write input back to the same file', (done) ->
+		it 'should be able to write input back to the same file', (done) ->
 			async.waterfall [
 				(done) -> fs.writeFile 'asset.txt', TEST_IN, done
 				(done) -> execute
