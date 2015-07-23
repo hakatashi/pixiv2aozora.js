@@ -66,33 +66,13 @@ describe 'pixiv2aozora command', ->
 		cli.stderr.pipe process.stderr
 
 	it 'should basically translate some texts by stdin and stdout', (done) ->
-		tests =
-			'もじれつー': 'もじれつー'
-			'ながいもじれつー': 'ながいもじれつー'
-
-			"""
-			[chapter:[[rb:和歌>ワカ]]]
-
-			「さばかりの事に死ぬるや」
-			「さばかりの事に生くるや」
-			止せ止せ問答
-			""" : """
-			［＃大見出し］｜和歌《ワカ》［＃大見出し終わり］
-
-			「さばかりの事に死ぬるや」
-			「さばかりの事に生くるや」
-			止せ止せ問答
-			"""
-
-		async.forEachOfSeries tests, (to, from, done) ->
-			execute
-				stdin: from
-				callback: (error, stdout, stderr) ->
-					if error then throw error
-					stdout.toString().should.equals to
-					stderr.toString().should.equals ''
-					done()
-		, done
+		execute
+			stdin: TEST_IN
+			callback: (error, stdout, stderr) ->
+				if error then throw error
+				stdout.toString().should.equals TEST_OUT
+				stderr.toString().should.equals ''
+				done()
 
 	describe 'file I/O', ->
 		afterEach (done) -> fs.unlink 'asset.txt', done
