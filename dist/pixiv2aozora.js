@@ -1,3 +1,9 @@
+/*!
+ * pixiv2aozora - v0.3.0 - 2015-07-23
+ * https://github.com/hakatashi/pixiv2aozora.js#readme
+ * Copyright (c) 2015 Koki Takahashi
+ * Licensed under MIT License
+ */
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function() {
   var global;
@@ -12,13 +18,40 @@
 
 },{"./":2}],2:[function(require,module,exports){
 (function() {
-  var META, Parser, pixiv2aozora, serialize, tags, toAozora;
+  var META, Parser, char, entities, entity, escapeText, pixiv2aozora, serialize, specialChars, specialCharsRegEx, tags, toAozora,
+    hasProp = {}.hasOwnProperty,
+    slice = [].slice;
 
   Parser = require('pixiv-novel-parser').Parser;
 
   META = {
     SOFTBREAK: 10001
   };
+
+  entities = {
+    '《': '※［＃始め二重山括弧、1-1-52］',
+    '》': '※［＃終わり二重山括弧、1-1-53］',
+    '［': '※［＃始め角括弧、1-1-46］',
+    '］': '※［＃終わり角括弧、1-1-47］',
+    '〔': '※［＃始めきっこう（亀甲）括弧、1-1-44］',
+    '〕': '※［＃終わりきっこう（亀甲）括弧、1-1-45］',
+    '｜': '※［＃縦線、1-1-35］',
+    '＃': '※［＃井げた、1-1-84］',
+    '※': '※［＃米印、1-2-8］'
+  };
+
+  specialChars = ((function() {
+    var results;
+    results = [];
+    for (char in entities) {
+      if (!hasProp.call(entities, char)) continue;
+      entity = entities[char];
+      results.push(char);
+    }
+    return results;
+  })()).join('');
+
+  specialCharsRegEx = new RegExp("[" + specialChars + "]", 'g');
 
   serialize = function(AST) {
     var aozora, j, len, token;
@@ -27,16 +60,22 @@
         aozora = [];
         for (j = 0, len = AST.length; j < len; j++) {
           token = AST[j];
-          aozora = aozora.concat(serialize(token));
+          aozora.push.apply(aozora, serialize(token));
         }
         break;
       case 'tag':
         aozora = tags[AST.name](AST);
         break;
       case 'text':
-        aozora = [AST.val];
+        aozora = [escapeText(AST.val)];
     }
     return aozora;
+  };
+
+  escapeText = function(text) {
+    return text.replace(specialCharsRegEx, function(char) {
+      return entities[char];
+    });
   };
 
   tags = {
@@ -44,10 +83,10 @@
       return [META.SOFTBREAK, '［＃改ページ］', META.SOFTBREAK];
     },
     chapter: function(AST) {
-      return [META.SOFTBREAK, "［＃大見出し］" + (toAozora(AST.title)) + "［＃大見出し終わり］", META.SOFTBREAK];
+      return [META.SOFTBREAK, '［＃大見出し］'].concat(slice.call(serialize(AST.title)), ['［＃大見出し終わり］'], [META.SOFTBREAK]);
     },
     rb: function(AST) {
-      return ["｜" + AST.rubyBase + "《" + AST.rubyText + "》"];
+      return ['｜', escapeText(AST.rubyBase), '《', escapeText(AST.rubyText), '》'];
     },
     pixivimage: function() {
       return [];

@@ -1,3 +1,9 @@
+0.3.0
+-----
+
+* :art: Escape special characters such as 《》 into their entities
+* Badge build package with banner
+
 0.2.2
 -----
 
