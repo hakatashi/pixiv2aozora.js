@@ -1,5 +1,5 @@
 /*!
- * pixiv2aozora - v0.3.0 - 2015-07-23
+ * pixiv2aozora - v0.4.0 - 2015-08-04
  * https://github.com/hakatashi/pixiv2aozora.js#readme
  * Copyright (c) 2015 Koki Takahashi
  * Licensed under MIT License
@@ -18,9 +18,9 @@
 
 },{"./":2}],2:[function(require,module,exports){
 (function() {
-  var META, Parser, char, entities, entity, escapeText, pixiv2aozora, serialize, specialChars, specialCharsRegEx, tags, toAozora,
-    hasProp = {}.hasOwnProperty,
-    slice = [].slice;
+  var META, Parser, entities, entityPresets, escapeText, pixiv2aozora, serialize, specialChars, specialCharsRegEx, tags, toAozora,
+    slice = [].slice,
+    hasProp = {}.hasOwnProperty;
 
   Parser = require('pixiv-novel-parser').Parser;
 
@@ -28,30 +28,36 @@
     SOFTBREAK: 10001
   };
 
-  entities = {
-    '《': '※［＃始め二重山括弧、1-1-52］',
-    '》': '※［＃終わり二重山括弧、1-1-53］',
-    '［': '※［＃始め角括弧、1-1-46］',
-    '］': '※［＃終わり角括弧、1-1-47］',
-    '〔': '※［＃始めきっこう（亀甲）括弧、1-1-44］',
-    '〕': '※［＃終わりきっこう（亀甲）括弧、1-1-45］',
-    '｜': '※［＃縦線、1-1-35］',
-    '＃': '※［＃井げた、1-1-84］',
-    '※': '※［＃米印、1-2-8］'
+  entityPresets = {
+    aozora: {
+      '《': '※［＃始め二重山括弧、1-1-52］',
+      '》': '※［＃終わり二重山括弧、1-1-53］',
+      '［': '※［＃始め角括弧、1-1-46］',
+      '］': '※［＃終わり角括弧、1-1-47］',
+      '〔': '※［＃始めきっこう（亀甲）括弧、1-1-44］',
+      '〕': '※［＃終わりきっこう（亀甲）括弧、1-1-45］',
+      '｜': '※［＃縦線、1-1-35］',
+      '＃': '※［＃井げた、1-1-84］',
+      '※': '※［＃米印、1-2-8］'
+    },
+    publishing: {
+      '《': '｜《',
+      '》': '｜》',
+      '［': '｜［',
+      '］': '｜］',
+      '〔': '〔',
+      '〕': '〕',
+      '｜': '｜｜',
+      '＃': '＃',
+      '※': '※'
+    }
   };
 
-  specialChars = ((function() {
-    var results;
-    results = [];
-    for (char in entities) {
-      if (!hasProp.call(entities, char)) continue;
-      entity = entities[char];
-      results.push(char);
-    }
-    return results;
-  })()).join('');
+  entities = null;
 
-  specialCharsRegEx = new RegExp("[" + specialChars + "]", 'g');
+  specialChars = null;
+
+  specialCharsRegEx = null;
 
   serialize = function(AST) {
     var aozora, j, len, token;
@@ -118,7 +124,38 @@
   };
 
   pixiv2aozora = function(text, options) {
-    var AST, parser;
+    var AST, char, entity, parser;
+    if (options == null) {
+      options = {};
+    }
+    if (typeof options !== 'object') {
+      throw new Error('Invalid options');
+    }
+    if (options.entities == null) {
+      options.entities = 'aozora';
+    }
+    if (typeof options.entities === 'string') {
+      if (entityPresets[options.entities] == null) {
+        throw new Error("Unknown entity presets " + options.entities);
+      } else {
+        entities = entityPresets[options.entities];
+      }
+    } else if (typeof options.entities === 'object') {
+      entities = options.entities;
+    } else {
+      throw new Error('Invalid option for entity presets');
+    }
+    specialChars = ((function() {
+      var results;
+      results = [];
+      for (char in entities) {
+        if (!hasProp.call(entities, char)) continue;
+        entity = entities[char];
+        results.push(char);
+      }
+      return results;
+    })()).join('');
+    specialCharsRegEx = new RegExp("[" + specialChars + "]", 'g');
     parser = new Parser();
     parser.parse(text);
     AST = parser.tree;

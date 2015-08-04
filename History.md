@@ -1,3 +1,9 @@
+0.4.0
+-----
+
+* :art: Conventional entity customization with options.entities
+  - :art: Then you can use --config option with CLI
+
 0.3.0
 -----
 
