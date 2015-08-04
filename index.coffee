@@ -116,7 +116,7 @@ pixiv2aozora = (text, options = {}) ->
 		throw new Error 'Invalid option for entity presets'
 
 	specialChars = (char for own char, entity of entities).join ''
-	specialCharsRegEx = new RegExp "[#{specialChars}]", 'g'
+	specialCharsRegEx = new RegExp "[#{specialChars.replace /[-\/\\^$*+?.()|[\]{}]/g, '\\$&'}]", 'g'
 
 	# Initialize AST
 	parser = new Parser()

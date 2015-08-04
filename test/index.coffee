@@ -281,3 +281,13 @@ describe 'pixiv2aozora', ->
 					｜｜＃｜｜
 					〔※〕
 					"""
+
+			it 'should be customizable with custom replacement table', ->
+				args = [
+					entities:
+						'\\': '\\\\'
+						'^': '\\^'
+						'$': '\\$'
+				]
+				tests =
+					'/^\\t青空$/': '/\\^\\\\t青空\\$/'
