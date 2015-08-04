@@ -19,10 +19,13 @@ else
 
 describe 'pixiv2aozora', ->
 	tests = {}
+	args = []
 
 	afterEach ->
 		for own from, to of tests
-			expect(pixiv2aozora(from)).to.equal to
+			expect(pixiv2aozora.apply(pixiv2aozora, [from].concat args)).to.equal to
+		tests = {}
+		args = []
 
 	it 'should translate plain texts as is', ->
 		tests =
@@ -241,3 +244,40 @@ describe 'pixiv2aozora', ->
 				""" : """
 				赤の扉を選んだら999ページヘ、緑の扉を選んだら801ページヘ
 				"""
+
+	describe 'options', ->
+		it 'should throw error when suspicious option was supplied', ->
+			# Unsafe inputs
+			expect(pixiv2aozora.bind pixiv2aozora, 'ピクシブ弐青空', 42).to.throw Error
+			expect(pixiv2aozora.bind pixiv2aozora, 'ピクシブ弐青空', '究極の疑問の答え').to.throw Error
+			expect(pixiv2aozora.bind pixiv2aozora, 'ピクシブ弐青空', parseInt).to.throw Error
+			# Safe inputs
+			expect(pixiv2aozora.bind pixiv2aozora, 'ピクシブ弐青空', null).not.to.throw Error
+			expect(pixiv2aozora.bind pixiv2aozora, 'ピクシブ弐青空', undefined).not.to.throw Error
+
+		describe 'options.entities', ->
+			it 'should be the same result when \'aozora\' was supplied', ->
+				args = [
+					entities: 'aozora'
+				]
+				tests =
+					'［］': '※［＃始め角括弧、1-1-46］※［＃終わり角括弧、1-1-47］'
+
+			it 'should be customizable with \'publishing\'', ->
+				args = [
+					entities: 'publishing'
+				]
+				tests =
+					'［＃青空文庫］': '｜［＃青空文庫｜］'
+					'※ただしイケメンに限る': '※ただしイケメンに限る'
+					'｜pixiv《ピクシブ》': '｜｜pixiv｜《ピクシブ｜》'
+
+					"""
+					《※》
+					｜＃｜
+					〔※〕
+					""" : """
+					｜《※｜》
+					｜｜＃｜｜
+					〔※〕
+					"""

@@ -7,19 +7,31 @@ META =
 	# This is praceholder of such breakline that can be removed by postprocessor.
 	SOFTBREAK: 10001
 
-entities =
-	'《': '※［＃始め二重山括弧、1-1-52］'
-	'》': '※［＃終わり二重山括弧、1-1-53］'
-	'［': '※［＃始め角括弧、1-1-46］'
-	'］': '※［＃終わり角括弧、1-1-47］'
-	'〔': '※［＃始めきっこう（亀甲）括弧、1-1-44］'
-	'〕': '※［＃終わりきっこう（亀甲）括弧、1-1-45］'
-	'｜': '※［＃縦線、1-1-35］'
-	'＃': '※［＃井げた、1-1-84］'
-	'※': '※［＃米印、1-2-8］'
+entityPresets =
+	aozora:
+		'《': '※［＃始め二重山括弧、1-1-52］'
+		'》': '※［＃終わり二重山括弧、1-1-53］'
+		'［': '※［＃始め角括弧、1-1-46］'
+		'］': '※［＃終わり角括弧、1-1-47］'
+		'〔': '※［＃始めきっこう（亀甲）括弧、1-1-44］'
+		'〕': '※［＃終わりきっこう（亀甲）括弧、1-1-45］'
+		'｜': '※［＃縦線、1-1-35］'
+		'＃': '※［＃井げた、1-1-84］'
+		'※': '※［＃米印、1-2-8］'
+	publishing:
+		'《': '｜《'
+		'》': '｜》'
+		'［': '｜［'
+		'］': '｜］'
+		'〔': '〔'
+		'〕': '〕'
+		'｜': '｜｜'
+		'＃': '＃'
+		'※': '※'
 
-specialChars = (char for own char, entity of entities).join ''
-specialCharsRegEx = new RegExp "[#{specialChars}]", 'g'
+entities = null
+specialChars = null
+specialCharsRegEx = null
 
 serialize = (AST) ->
 	switch AST.type
@@ -41,7 +53,8 @@ serialize = (AST) ->
 	return aozora
 
 # Escape special chars in text into their entities
-escapeText = (text) -> text.replace specialCharsRegEx, (char) -> entities[char]
+escapeText = (text) ->
+	text.replace specialCharsRegEx, (char) -> entities[char]
 
 tags =
 	newpage: -> [
@@ -86,7 +99,25 @@ toAozora = (AST) ->
 
 	return tokens.join ''
 
-pixiv2aozora = (text, options) ->
+pixiv2aozora = (text, options = {}) ->
+	if typeof options isnt 'object'
+		throw new Error 'Invalid options'
+
+	options.entities ?= 'aozora'
+
+	if typeof options.entities is 'string'
+		if not entityPresets[options.entities]?
+			throw new Error "Unknown entity presets #{options.entities}"
+		else
+			entities = entityPresets[options.entities]
+	else if typeof options.entities is 'object'
+		entities = options.entities
+	else
+		throw new Error 'Invalid option for entity presets'
+
+	specialChars = (char for own char, entity of entities).join ''
+	specialCharsRegEx = new RegExp "[#{specialChars}]", 'g'
+
 	# Initialize AST
 	parser = new Parser()
 	parser.parse text
