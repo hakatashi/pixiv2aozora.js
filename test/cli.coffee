@@ -162,7 +162,7 @@ describe 'pixiv2aozora command', ->
 			], done
 
 	describe 'customization', ->
-		it 'should be customizable with --config option', ->
+		it 'should be customizable with --config option', (done) ->
 			execute
 				args: [
 					"""--config '{"entities": "publishing"}' """
