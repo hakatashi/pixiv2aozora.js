@@ -161,6 +161,19 @@ describe 'pixiv2aozora command', ->
 					done()
 			], done
 
+	describe 'customization', ->
+		it 'should be customizable with --config option', ->
+			execute
+				args: [
+					"""--config '{"entities": "publishing"}' """
+				]
+				stdin: '｜《》'
+				callback: (error, stdout, stderr) ->
+					if error then throw error
+					stdout.toString().should.equals '｜｜｜《｜》'
+					stderr.toString().should.equals ''
+					done()
+
 	describe '--input-encoding option', ->
 		it 'should accept UTF-16 as encoding', (done) ->
 			execute
