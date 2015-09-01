@@ -145,10 +145,13 @@ pixiv2aozora = (text, options = {}) ->
 	AST = parser.tree
 
 	# Custom transformer of AST
-	if typeof options.transform is 'function'
-		AST = options.transform.call this, AST, escapeAST
-	else
-		AST = escapeAST AST
+	switch typeof options.transform
+		when 'undefined'
+			AST = escapeAST AST
+		when 'function'
+			AST = options.transform.call this, AST, escapeAST
+		else
+			throw new Error 'Invalid options.transform'
 
 	return toAozora AST
 

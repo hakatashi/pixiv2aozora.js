@@ -327,3 +327,10 @@ describe 'pixiv2aozora', ->
 					entities: 'publishing'
 
 				expect(aozora).to.equal '｜［＃青空文庫｜］'
+
+			it 'should throw error when invalid transformer is supplied', ->
+				# Unsafe inputs
+				expect(pixiv2aozora.bind pixiv2aozora, 'ピクシブ弐青空', transform: 42).to.throw Error
+				expect(pixiv2aozora.bind pixiv2aozora, 'ピクシブ弐青空', transform: '究極の疑問の答え').to.throw Error
+				expect(pixiv2aozora.bind pixiv2aozora, 'ピクシブ弐青空', transform: null).to.throw Error
+				expect(pixiv2aozora.bind pixiv2aozora, 'ピクシブ弐青空', transform: undefined).not.to.throw Error
