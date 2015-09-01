@@ -48,13 +48,34 @@ serialize = (AST) ->
 
 		# Text token
 		when 'text'
-			aozora = [escapeText AST.val]
+			aozora = [AST.val]
 
 	return aozora
 
 # Escape special chars in text into their entities
 escapeText = (text) ->
 	text.replace specialCharsRegEx, (char) -> entities[char]
+
+# Escape all texts inside AST
+escapeAST = (AST) ->
+
+	switch AST.type
+		when undefined
+			for token, index in AST
+				AST[index] = escapeAST token
+		when 'tag'
+			switch AST.name
+				when 'chapter'
+					AST.title = escapeAST AST.title
+				when 'rb'
+					AST.rubyBase = escapeText AST.rubyBase
+					AST.rubyText = escapeText AST.rubyText
+				when 'jumpuri'
+					AST.title = escapeAST AST.title
+		when 'text'
+			AST.val = escapeText AST.val
+
+	return AST
 
 tags =
 	newpage: -> [
@@ -73,9 +94,9 @@ tags =
 
 	rb: (AST) -> [
 		'｜'
-		escapeText AST.rubyBase
+		AST.rubyBase
 		'《'
-		escapeText AST.rubyText
+		AST.rubyText
 		'》'
 	]
 
@@ -122,6 +143,8 @@ pixiv2aozora = (text, options = {}) ->
 	parser = new Parser()
 	parser.parse text
 	AST = parser.tree
+
+	AST = escapeAST AST
 
 	return toAozora AST
 
