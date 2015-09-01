@@ -144,7 +144,11 @@ pixiv2aozora = (text, options = {}) ->
 	parser.parse text
 	AST = parser.tree
 
-	AST = escapeAST AST
+	# Custom transformer of AST
+	if typeof options.transform is 'function'
+		AST = options.transform.call this, AST, escapeAST
+	else
+		AST = escapeAST AST
 
 	return toAozora AST
 

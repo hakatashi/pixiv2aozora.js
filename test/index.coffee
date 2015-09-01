@@ -291,3 +291,39 @@ describe 'pixiv2aozora', ->
 				]
 				tests =
 					'/^\\t青空$/': '/\\^\\\\t青空\\$/'
+
+		describe 'options.transform', ->
+			it 'should be acceptable of custom transformer function', ->
+				aozora = pixiv2aozora 'この文章は[[rb:前後反転>ぜんごはんてん]]しています。',
+					transform: (AST) ->
+						reverse = (string) -> string.split('').reverse().join ''
+
+						transform = (AST) ->
+							switch AST.type
+								when undefined
+									for token, index in AST
+										AST[index] = transform token
+									AST = AST.reverse()
+								when 'tag'
+									switch AST.name
+										when 'chapter'
+											AST.title = transform AST.title
+										when 'rb'
+											AST.rubyBase = reverse AST.rubyBase
+											AST.rubyText = reverse AST.rubyText
+										when 'jumpuri'
+											AST.title = transform AST.title
+								when 'text'
+									AST.val = reverse AST.val
+							return AST
+
+						return transform AST
+
+				expect(aozora).to.equal '。すまいてし｜転反後前《んてんはごんぜ》は章文のこ'
+
+			it 'should supply usual escaping function as second ardument', ->
+				aozora = pixiv2aozora '［＃青空文庫］',
+					transform: (AST, escapeAST) -> escapeAST AST
+					entities: 'publishing'
+
+				expect(aozora).to.equal '｜［＃青空文庫｜］'
