@@ -1,5 +1,5 @@
 /*!
- * pixiv2aozora - v0.4.0 - 2015-08-04
+ * pixiv2aozora - v0.5.0 - 2015-09-01
  * https://github.com/hakatashi/pixiv2aozora.js#readme
  * Copyright (c) 2015 Koki Takahashi
  * Licensed under MIT License
@@ -18,7 +18,7 @@
 
 },{"./":2}],2:[function(require,module,exports){
 (function() {
-  var META, Parser, entities, entityPresets, escapeText, pixiv2aozora, serialize, specialChars, specialCharsRegEx, tags, toAozora,
+  var META, Parser, entities, entityPresets, escapeAST, escapeText, pixiv2aozora, serialize, specialChars, specialCharsRegEx, tags, toAozora,
     slice = [].slice,
     hasProp = {}.hasOwnProperty;
 
@@ -73,7 +73,7 @@
         aozora = tags[AST.name](AST);
         break;
       case 'text':
-        aozora = [escapeText(AST.val)];
+        aozora = [AST.val];
     }
     return aozora;
   };
@@ -84,6 +84,34 @@
     });
   };
 
+  escapeAST = function(AST) {
+    var index, j, len, token;
+    switch (AST.type) {
+      case void 0:
+        for (index = j = 0, len = AST.length; j < len; index = ++j) {
+          token = AST[index];
+          AST[index] = escapeAST(token);
+        }
+        break;
+      case 'tag':
+        switch (AST.name) {
+          case 'chapter':
+            AST.title = escapeAST(AST.title);
+            break;
+          case 'rb':
+            AST.rubyBase = escapeText(AST.rubyBase);
+            AST.rubyText = escapeText(AST.rubyText);
+            break;
+          case 'jumpuri':
+            AST.title = escapeAST(AST.title);
+        }
+        break;
+      case 'text':
+        AST.val = escapeText(AST.val);
+    }
+    return AST;
+  };
+
   tags = {
     newpage: function() {
       return [META.SOFTBREAK, '［＃改ページ］', META.SOFTBREAK];
@@ -92,7 +120,7 @@
       return [META.SOFTBREAK, '［＃大見出し］'].concat(slice.call(serialize(AST.title)), ['［＃大見出し終わり］'], [META.SOFTBREAK]);
     },
     rb: function(AST) {
-      return ['｜', escapeText(AST.rubyBase), '《', escapeText(AST.rubyText), '》'];
+      return ['｜', AST.rubyBase, '《', AST.rubyText, '》'];
     },
     pixivimage: function() {
       return [];
@@ -155,10 +183,20 @@
       }
       return results;
     })()).join('');
-    specialCharsRegEx = new RegExp("[" + specialChars + "]", 'g');
+    specialCharsRegEx = new RegExp("[" + (specialChars.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')) + "]", 'g');
     parser = new Parser();
     parser.parse(text);
     AST = parser.tree;
+    switch (typeof options.transform) {
+      case 'undefined':
+        AST = escapeAST(AST);
+        break;
+      case 'function':
+        AST = options.transform.call(this, AST, escapeAST);
+        break;
+      default:
+        throw new Error('Invalid options.transform');
+    }
     return toAozora(AST);
   };
 

@@ -1,3 +1,8 @@
+0.5.0
+-----
+
+* :art: You can specify any custom intermediate AST transformer by options.transform
+
 0.4.0
 -----
 
