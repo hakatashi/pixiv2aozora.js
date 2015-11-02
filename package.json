@@ -52,7 +52,7 @@
   "dependencies": {
     "commander": "^2.8.1",
     "iconv-lite": "^0.4.11",
-    "pixiv-novel-parser": "0.2.x"
+    "pixiv-novel-parser": "^0.2.0"
   },
   "bin": "./cli.js"
 }
