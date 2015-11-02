@@ -2,8 +2,7 @@ sudo: false
 language: node_js
 before_script: bower install
 node_js:
-  - 'iojs'
   - '0.12'
-  - '0.10'
+  - '5'
 notifications:
   webhooks: http://webhook.hakatashi.com/travis
