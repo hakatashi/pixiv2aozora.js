@@ -1,6 +1,8 @@
 pixiv2aozora
 ============
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/hakatashi/pixiv2aozora.js.svg)](https://greenkeeper.io/)
+
 [![Build Status][travis-image]][travis-url]
 [![Bower][bower-image]][bower-url]
 [![npm][npm-image]][npm-url]
