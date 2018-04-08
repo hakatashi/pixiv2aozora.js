@@ -37,7 +37,7 @@
     "bower": "^1.4.1",
     "chai": "^4.1.2",
     "grunt": "^1.0.1",
-    "grunt-browserify": "^5.0.0",
+    "grunt-browserify": "5.2.0",
     "grunt-cli": "^1.2.0",
     "grunt-coffeelint": "0.0.16",
     "grunt-contrib-coffee": "^1.0.0",
