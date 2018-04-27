@@ -4,5 +4,6 @@ before_script: bower install
 node_js:
   - '0.12'
   - '5'
+  - '10'
 notifications:
   webhooks: http://webhook.hakatashi.com/travis
