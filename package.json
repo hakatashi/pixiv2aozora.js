@@ -51,7 +51,7 @@
   },
   "dependencies": {
     "commander": "^2.8.1",
-    "iconv-lite": "^0.4.11",
+    "iconv-lite": "^0.5.0",
     "pixiv-novel-parser": "^0.3.0"
   },
   "bin": "./cli.js"
