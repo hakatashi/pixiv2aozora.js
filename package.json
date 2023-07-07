@@ -50,7 +50,7 @@
     "time-grunt": "^1.2.1"
   },
   "dependencies": {
-    "commander": "^10.0.0",
+    "commander": "^11.0.0",
     "iconv-lite": "^0.6.2",
     "pixiv-novel-parser": "^0.3.0"
   },
